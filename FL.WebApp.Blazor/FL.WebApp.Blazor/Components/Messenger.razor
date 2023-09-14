@@ -1,0 +1,24 @@
+﻿@page "/messenger"
+
+<PageTitle>Index</PageTitle>
+
+<h1>Messages, EasyNetQ Demo</h1>
+
+<br />
+
+<h4>Call API To Do Publish</h4>
+<h6>Click send button or hit enter</h6>
+<div>
+    <input type="text" @bind="comment" @onkeypress="SendHandleKeyPress" />
+    <button @onclick="Send"><i class="oi oi-envelope-closed"></i> Send</button>
+</div>
+
+<br />
+
+<h4>Subscribe</h4>
+<div>
+    @foreach(var comment in incomingComments)
+    {
+        <li>@comment</li>
+    }
+</div>
