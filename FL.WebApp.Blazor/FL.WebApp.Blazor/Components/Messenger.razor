@@ -8,17 +8,50 @@
 
 <h4>Call API To Do Publish</h4>
 <h6>Click send button or hit enter</h6>
+
 <div>
-    <input type="text" @bind="comment" @onkeypress="SendHandleKeyPress" />
-    <button @onclick="Send"><i class="oi oi-envelope-closed"></i> Send</button>
+    <input type="text" @bind="_privateComment" @onkeypress="HandleKeyPressSendToPrivate" />
+    <button @onclick="SendToPrivate"><i class="oi oi-envelope-closed"></i> Send to Private</button>
+</div>
+<div>
+    <input type="text" @bind="_publicComment" @onkeypress="HandleKeyPressSendToPublic" />
+    <button @onclick="SendToPublic"><i class="oi oi-envelope-closed"></i> Send to Public</button>
 </div>
 
 <br />
 
-<h4>Subscribe</h4>
-<div>
-    @foreach(var comment in incomingComments)
-    {
-        <li>@comment</li>
-    }
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-4">
+            <h4>Subscribe to topic Test.*</h4>
+            <div>
+                @foreach(var comment in _incomingComments)
+                {
+                    <li>@comment</li>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <h4>Subscribe to topic Test.PrivateComment</h4>
+            <div>
+                @foreach(var comment in _incomingPrivateComments)
+                {
+                    <li>@comment</li>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <h4>Subscribe to topic Test.PublicComment</h4>
+            <div>
+                @foreach(var comment in _incomingPublicComments)
+                {
+                    <li>@comment</li>
+                }
+            </div>
+        </div>
+
+    </div>
 </div>

@@ -39,7 +39,7 @@ namespace FL.WebApp.Blazor.Services
             {
                 var response = await _httpClient.PostAsJsonAsync("https://localhost:44349/comments/create", new Comment
                 {
-                    PostId = Guid.NewGuid(),
+                    PostId = comment.PostId,
                     Description = comment.Description
                 });
 

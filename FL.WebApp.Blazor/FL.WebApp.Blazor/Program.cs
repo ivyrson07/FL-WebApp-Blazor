@@ -11,7 +11,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 
-builder.Services.AddSingleton(sp => RabbitHutch.CreateBus("host=localhost"));
+builder.Services.AddScoped(sp => RabbitHutch.CreateBus("host=localhost"));
 builder.Services.AddHttpClient<ICommentService, CommentService>(client => client.BaseAddress = new Uri("https://localhost:44349/"));
 
 var app = builder.Build();

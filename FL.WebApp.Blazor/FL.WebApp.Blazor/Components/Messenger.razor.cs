@@ -14,8 +14,11 @@ namespace FL.WebApp.Blazor.Components
         [Inject]
         private IBus Bus { get; set; }
 
-        public string comment = "";
-        private List<string> incomingComments = new List<string>();
+        public string _privateComment = "";
+        public string _publicComment = "";
+        private List<string> _incomingComments = new List<string>();
+        private List<string> _incomingPrivateComments = new List<string>();
+        private List<string> _incomingPublicComments = new List<string>();
 
         protected override async Task OnInitializedAsync()
         {
@@ -23,24 +26,9 @@ namespace FL.WebApp.Blazor.Components
 
             try
             {
-                await Bus.PubSub.SubscribeAsync<Comment>("comment", message => Task.Factory.StartNew(async () =>
-                {
-                    if (!string.IsNullOrWhiteSpace(message.Description))
-                    {
-                        incomingComments.Add(message.Description);
-
-                        await InvokeAsync(() =>
-                        {
-                            comment = "";
-                            StateHasChanged();
-                        });
-                    }
-                }).ContinueWith(task =>
-                {
-                    if (task.IsCompleted && !task.IsFaulted)
-                    {
-                    }
-                }));
+                await Bus.PubSub.SubscribeAsync<Comment>("comments", async message => await HandlePubSubComments(message), message => message.WithTopic("test.*"));
+                await Bus.PubSub.SubscribeAsync<Comment>("privatecomments", async message => await HandlePubSubPrivateComments(message), message => message.WithTopic("test.privatecomment"));
+                await Bus.PubSub.SubscribeAsync<Comment>("publiccomments", async message => await HandlePubSubPublicComments(message), message => message.WithTopic("test.publiccomment"));
             }
             catch (Exception ex)
             {
@@ -49,22 +37,85 @@ namespace FL.WebApp.Blazor.Components
             }
         }
 
-        private async Task Send()
+        private async Task SendToPrivate()
+        {
+            await CommentApi.CreateAsync(new Comment
+            {
+                PostId = Guid.Empty,
+                Description = _privateComment
+            });
+        }
+
+        private async Task SendToPublic()
         {
             await CommentApi.CreateAsync(new Comment
             {
                 PostId = Guid.NewGuid(),
-                Description = comment
+                Description = _publicComment
             });
         }
 
-        private async Task SendHandleKeyPress(KeyboardEventArgs e)
+        private async Task HandlePubSubComments(Comment comment)
+        {
+            if (!string.IsNullOrWhiteSpace(comment.Description))
+            {
+                _incomingComments.Add(comment.Description);
+
+                await InvokeAsync(() =>
+                {
+                    _privateComment = "";
+                    _publicComment = "";
+                    StateHasChanged();
+                });
+            }
+        }
+
+        private async Task HandlePubSubPrivateComments(Comment comment)
+        {
+            if (!string.IsNullOrWhiteSpace(comment.Description))
+            {
+                _incomingPrivateComments.Add(comment.Description);
+
+                await InvokeAsync(() =>
+                {
+                    _privateComment = "";
+                    StateHasChanged();
+                });
+            }
+        }
+
+        private async Task HandlePubSubPublicComments(Comment comment)
+        {
+            if (!string.IsNullOrWhiteSpace(comment.Description))
+            {
+                _incomingPublicComments.Add(comment.Description);
+
+                await InvokeAsync(() =>
+                {
+                    _publicComment = "";
+                    StateHasChanged();
+                });
+            }
+        }
+
+        private async Task HandleKeyPressSendToPrivate(KeyboardEventArgs e)
         {
             await Task.Run(async () =>
             {
                 if (e.Key == "Enter")
                 {
-                    await Send();
+                    await SendToPrivate();
+                }
+            });
+        }
+
+        private async Task HandleKeyPressSendToPublic(KeyboardEventArgs e)
+        {
+            await Task.Run(async () =>
+            {
+                if (e.Key == "Enter")
+                {
+                    await SendToPublic();
                 }
             });
         }
