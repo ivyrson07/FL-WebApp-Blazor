@@ -1,5 +1,6 @@
 ﻿using EasyNetQ;
 using FL.Common.Models;
+using FL.Common.RoutingKeys;
 using FL.WebApp.Blazor.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -14,8 +15,8 @@ namespace FL.WebApp.Blazor.Components
         [Inject]
         private IBus Bus { get; set; }
 
-        public string _privateComment = "";
-        public string _publicComment = "";
+        private string _privateComment = "";
+        private string _publicComment = "";
         private List<string> _incomingComments = new List<string>();
         private List<string> _incomingPrivateComments = new List<string>();
         private List<string> _incomingPublicComments = new List<string>();
@@ -26,9 +27,9 @@ namespace FL.WebApp.Blazor.Components
 
             try
             {
-                await Bus.PubSub.SubscribeAsync<Comment>("comments", async message => await HandlePubSubComments(message), message => message.WithTopic("test.*"));
-                await Bus.PubSub.SubscribeAsync<Comment>("privatecomments", async message => await HandlePubSubPrivateComments(message), message => message.WithTopic("test.privatecomment"));
-                await Bus.PubSub.SubscribeAsync<Comment>("publiccomments", async message => await HandlePubSubPublicComments(message), message => message.WithTopic("test.publiccomment"));
+                await Bus.PubSub.SubscribeAsync<Comment>("comments", async message => await HandlePubSubComments(message), message => message.WithTopic(Topic.TestCommentAny));
+                await Bus.PubSub.SubscribeAsync<Comment>("privatecomments", async message => await HandlePubSubPrivateComments(message), message => message.WithTopic(Topic.TestCommentPrivate));
+                await Bus.PubSub.SubscribeAsync<Comment>("publiccomments", async message => await HandlePubSubPublicComments(message), message => message.WithTopic(Topic.TestCommentPublic));
             }
             catch (Exception ex)
             {

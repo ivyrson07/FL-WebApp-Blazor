@@ -21,7 +21,7 @@ namespace FL.WebApp.Blazor.Services
 
         public async Task<Comment> GetAsync(Guid id)
         {
-            var response = await _httpClient.GetFromJsonAsync<Comment>($"https://localhost:44349/comments/{id}");
+            var response = await _httpClient.GetFromJsonAsync<Comment>($"comments/{id}");
 
             if (response != null)
                 return response;
@@ -37,7 +37,7 @@ namespace FL.WebApp.Blazor.Services
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("https://localhost:44349/comments/create", new Comment
+                var response = await _httpClient.PostAsJsonAsync("comments/create", new Comment
                 {
                     PostId = comment.PostId,
                     Description = comment.Description

@@ -1,0 +1,77 @@
+﻿@page "/catalog"
+
+<PageTitle>Catalog</PageTitle>
+
+<h1>Catalog, EasyNetQ Demo</h1>
+
+<br />
+
+<h4>Request and Response Pattern</h4>
+<h6>Click purchase to proceed to request</h6>
+
+@if (_displayUnavailableProductError)
+{
+    <div class="alert alert-danger">
+        Product unavailable : @_unavailableProduct.Name - @_unavailableProduct.Code
+    </div>
+}
+
+<div class="container">
+    <div class="row">
+        
+        <div class="col-md-4">
+            @foreach (var item in _catalog)
+            {
+                <div class="product">
+                    <div class="product-info">
+                        <h2>@item.Name</h2>
+                        <p>Code: @item.Code</p>
+                        <p>Price: $@item.Price</p>
+                        <button @onclick="@(() => PurchaseItem(item))">Purchase</button>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <div class="col-md-4">
+        </div>
+        
+        <div class="col-md-4">
+            Item/s to be Purchased
+
+            @foreach (var item in _cart)
+            {
+                <p>@item.Name - @item.Code : $@item.Price</p>
+            }
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 10px;
+    }
+
+    .product {
+        border: 1px solid #ddd;
+        background-color: white;
+        padding: 10px;
+        margin: 10px 0;
+        display: flex;
+    }
+
+    .product-info {
+        flex-grow: 1;
+    }
+
+    h2 {
+        margin: 0;
+    }
+
+    p {
+        margin: 5px 0;
+    }
+</style>

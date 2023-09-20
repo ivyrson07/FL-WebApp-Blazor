@@ -13,6 +13,7 @@ builder.Services.AddSingleton<WeatherForecastService>();
 
 builder.Services.AddScoped(sp => RabbitHutch.CreateBus("host=localhost"));
 builder.Services.AddHttpClient<ICommentService, CommentService>(client => client.BaseAddress = new Uri("https://localhost:44349/"));
+builder.Services.AddHttpClient<ICatalogService, CatalogService>(client => client.BaseAddress = new Uri("https://localhost:7199/"));
 
 var app = builder.Build();
 
